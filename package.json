@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:css": "tailwindcss -i ./style.css -o ./output.css --minify"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
@@ -18,12 +19,17 @@
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^5.6.0",
     "react-native": "0.74.5",
-    "react-native-web": "~0.19.10"
+    "react-native-web": "~0.19.10",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.27",
     "eslint": "^8.57.1",
     "eslint-config-universe": "^13.0.0",
-    "prettier": "^3.3.3"
+    "postcss": "^8.5.9",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^4.2.2"
   }
 }

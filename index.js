@@ -1,3 +1,4 @@
+// ...existing code...
 const form = document.getElementById('calorie-form');
 const result = document.getElementById('result');
 

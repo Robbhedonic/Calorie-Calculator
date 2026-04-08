@@ -1,389 +1,174 @@
-import React, { useMemo, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
-const ACTIVITY_LEVELS = [
-  { label: 'Sedentary (little or no exercise)', value: 1.2 },
-  { label: 'Light (1-3 days/week)', value: 1.375 },
-  { label: 'Moderate (3-5 days/week)', value: 1.55 },
-  { label: 'High (6-7 days/week)', value: 1.725 },
-  { label: 'Very high (physical job + training)', value: 1.9 },
-];
-
-const GOALS = [
-  { label: 'Maintain weight', value: 'maintain' },
-  { label: 'Lose fat (-15%)', value: 'cut' },
-  { label: 'Build muscle (+10%)', value: 'bulk' },
-];
-
-function formatCalories(value) {
-  return Math.round(value).toLocaleString('en-US');
-}
-
-function formatWeeks(value) {
-  return value.toFixed(1);
-}
-
-function SelectGroup({ options, selectedValue, onSelect }) {
-  return (
-    <View style={styles.choiceWrap}>
-      {options.map((option) => {
-        const active = option.value === selectedValue;
-        return (
-          <TouchableOpacity
-            key={String(option.value)}
-            style={[styles.choiceChip, active && styles.choiceChipActive]}
-            onPress={() => onSelect(option.value)}
-          >
-            <Text style={[styles.choiceText, active && styles.choiceTextActive]}>
-              {option.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-}
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 
 export default function App() {
-  const [sex, setSex] = useState('male');
+  const [gender, setGender] = useState('male');
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
-  const [fatToLoseKg, setFatToLoseKg] = useState('4');
-  const [activity, setActivity] = useState(1.2);
+  const [activity, setActivity] = useState(3);
   const [goal, setGoal] = useState('maintain');
-  const [submitted, setSubmitted] = useState(false);
+  const [result, setResult] = useState(null);
 
-  const calculation = useMemo(() => {
+  function formatCalories(value) {
+    return Math.round(value).toLocaleString('en-US');
+  }
+
+  function calculate() {
+    if (!age || !weight || !height) return;
     const ageNum = Number(age);
     const weightNum = Number(weight);
     const heightNum = Number(height);
-    const fatTargetNum = Number(fatToLoseKg);
-
-    if (!submitted || !ageNum || !weightNum || !heightNum) {
-      return null;
-    }
-
-    const bmr =
-      sex === 'male'
-        ? 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5
-        : 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-
-    const maintenance = bmr * activity;
+    let bmr = gender === 'male'
+      ? 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5
+      : 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
+    const activityFactors = [1.2, 1.375, 1.55, 1.725];
+    const maintenance = bmr * activityFactors[activity - 1];
     let target = maintenance;
     let goalLabel = 'Maintenance';
-
-    if (goal === 'cut') {
+    if (goal === 'lose') {
       target = maintenance * 0.85;
-      goalLabel = 'Cut (-15%)';
-    }
-
-    if (goal === 'bulk') {
+      goalLabel = 'Lose (-15%)';
+    } else if (goal === 'lose10') {
+      target = maintenance * 0.9;
+      goalLabel = 'Lose 10%';
+    } else if (goal === 'gain') {
       target = maintenance * 1.1;
-      goalLabel = 'Bulk (+10%)';
+      goalLabel = 'Gain (+10%)';
     }
+    setResult({ bmr, maintenance, target, goalLabel });
+  }
 
-    const deficitPerDay = Math.max(maintenance - target, 0);
-    const weeklyFatLossKg = (deficitPerDay * 7) / 7700;
-    const weeksToGoal =
-      goal === 'cut' && fatTargetNum > 0 && weeklyFatLossKg > 0
-        ? fatTargetNum / weeklyFatLossKg
-        : null;
+  function clearForm() {
+    setGender('male'); setAge(''); setWeight(''); setHeight(''); setActivity(1); setGoal('lose'); setResult(null);
+  }
 
-    let cardioRecommendation = '2 sessions/week, 20-30 min each (zone 2).';
-    if (goal === 'cut') {
-      if (activity <= 1.375) {
-        cardioRecommendation = '4-5 sessions/week, 25-35 min each (zone 2).';
-      } else if (activity <= 1.55) {
-        cardioRecommendation = '3-4 sessions/week, 20-30 min each (zone 2).';
-      } else {
-        cardioRecommendation = '2-3 sessions/week, 20-25 min each (zone 2).';
-      }
-    }
+  // Responsive layout eliminado (no Dimensions)
 
-    let strengthPlan =
-      '3 full-body sessions/week. Example: Mon, Wed, Fri (with rest days between).';
-    if (goal === 'cut') {
-      strengthPlan = '3-4 sessions/week. Example: Mon Upper, Tue Lower, Thu Upper, Fri Lower.';
-    }
-    if (goal === 'bulk') {
-      strengthPlan = '4-5 sessions/week. Example: Push, Pull, Legs, rest, Upper, Lower.';
-    }
+  // Datos para gráfico de macros (ejemplo)
+  const macrosData = result && !result.error ? [
+    { name: 'Carbs', value: 216, color: '#4ade80' },
+    { name: 'Protein', value: 138, color: '#22d3ee' },
+    { name: 'Fat', value: 53, color: '#facc15' },
+  ] : [];
 
-    return {
-      bmr,
-      maintenance,
-      target,
-      goalLabel,
-      weeksToGoal,
-      cardioRecommendation,
-      strengthPlan,
-      fatTargetNum,
-    };
-  }, [activity, age, fatToLoseKg, goal, height, sex, submitted, weight]);
-
-  const hasInvalidInput =
-    submitted &&
-    (!Number(age) ||
-      !Number(weight) ||
-      !Number(height) ||
-      (goal === 'cut' && Number(fatToLoseKg) <= 0));
+  // Datos para gráfico circular de calorías
+  const pieData = result && !result.error ? [
+    { name: 'Kcal', value: result.calories || result.target, color: '#fb923c' },
+    { name: 'Rest', value: ((result.calories || result.target) > 0 ? 2500 - (result.calories || result.target) : 0), color: '#f3f4f6' },
+  ] : [];
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f6f1' }}>
       <StatusBar barStyle="dark-content" />
-      <KeyboardAvoidingView
-        style={styles.safe}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <View style={styles.card}>
-            <Text style={styles.title}>Calorie Calculator</Text>
-            <Text style={styles.subtitle}>
-              Calculate your daily calories for maintenance, cutting, or bulking.
-            </Text>
-
-            <Text style={styles.label}>Sex</Text>
-            <View style={styles.rowTwo}>
-              <TouchableOpacity
-                style={[styles.toggle, sex === 'male' && styles.toggleActive]}
-                onPress={() => setSex('male')}
-              >
-                <Text style={[styles.toggleText, sex === 'male' && styles.toggleTextActive]}>
-                  Male
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.toggle, sex === 'female' && styles.toggleActive]}
-                onPress={() => setSex('female')}
-              >
-                <Text style={[styles.toggleText, sex === 'female' && styles.toggleTextActive]}>
-                  Female
-                </Text>
-              </TouchableOpacity>
+      <ScrollView contentContainerStyle={{ padding: 24 }}>
+        <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#222', marginBottom: 8 }}>Calorie Calculator</Text>
+        <Text style={{ color: '#555', marginBottom: 24 }}>Calculate your daily calories for maintenance, cutting, or bulking.</Text>
+        {/* Dos columnas: inputs a la izquierda, actividad a la derecha */}
+        <View style={{ flexDirection: 'row', gap: 24, marginBottom: 24, maxWidth: 900, alignSelf: 'center', width: '100%' }}>
+          {/* Columna izquierda: datos principales */}
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Sex</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: gender === 'male' ? '#db7c36' : '#fff', borderRadius: 8, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: '#db7c36' }} onPress={() => setGender('male')}><Text style={{ color: gender === 'male' ? '#fff' : '#db7c36', fontWeight: 'bold' }}>Male</Text></TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: gender === 'female' ? '#db7c36' : '#fff', borderRadius: 8, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: '#db7c36' }} onPress={() => setGender('female')}><Text style={{ color: gender === 'female' ? '#fff' : '#db7c36', fontWeight: 'bold' }}>Female</Text></TouchableOpacity>
             </View>
-
-            <Text style={styles.label}>Age (years)</Text>
-            <TextInput
-              style={styles.input}
-              value={age}
-              onChangeText={setAge}
-              keyboardType="numeric"
-              placeholder="e.g. 28"
-              placeholderTextColor="#9c8e81"
-            />
-
-            <Text style={styles.label}>Weight (kg)</Text>
-            <TextInput
-              style={styles.input}
-              value={weight}
-              onChangeText={setWeight}
-              keyboardType="decimal-pad"
-              placeholder="e.g. 72.5"
-              placeholderTextColor="#9c8e81"
-            />
-
-            <Text style={styles.label}>Height (cm)</Text>
-            <TextInput
-              style={styles.input}
-              value={height}
-              onChangeText={setHeight}
-              keyboardType="numeric"
-              placeholder="e.g. 175"
-              placeholderTextColor="#9c8e81"
-            />
-
-            {goal === 'cut' && (
-              <>
-                <Text style={styles.label}>Fat to lose (kg)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={fatToLoseKg}
-                  onChangeText={setFatToLoseKg}
-                  keyboardType="decimal-pad"
-                  placeholder="e.g. 4"
-                  placeholderTextColor="#9c8e81"
-                />
-              </>
-            )}
-
-            <Text style={styles.label}>Activity level</Text>
-            <SelectGroup
-              options={ACTIVITY_LEVELS}
-              selectedValue={activity}
-              onSelect={setActivity}
-            />
-
-            <Text style={styles.label}>Goal</Text>
-            <SelectGroup options={GOALS} selectedValue={goal} onSelect={setGoal} />
-
-            <TouchableOpacity style={styles.button} onPress={() => setSubmitted(true)}>
-              <Text style={styles.buttonText}>Calculate</Text>
-            </TouchableOpacity>
-
-            <View style={styles.resultBox}>
-              {!submitted && (
-                <Text style={styles.resultText}>Complete the form to see your result.</Text>
-              )}
-              {hasInvalidInput && (
-                <Text style={styles.errorText}>
-                  Please fill all fields with valid numbers (and a positive fat-loss target).
-                </Text>
-              )}
-              {calculation && (
-                <Text style={styles.resultText}>
-                  {'Estimated daily result\n'}
-                  {`BMR: ${formatCalories(calculation.bmr)} kcal\n`}
-                  {`Maintenance: ${formatCalories(calculation.maintenance)} kcal\n`}
-                  {`${calculation.goalLabel}: ${formatCalories(calculation.target)} kcal\n\n`}
-                  {goal === 'cut' && calculation.weeksToGoal
-                    ? `Estimated time to lose ${calculation.fatTargetNum} kg of fat: ${formatWeeks(calculation.weeksToGoal)} weeks\n\n`
-                    : ''}
-                  {`Cardio recommendation: ${calculation.cardioRecommendation}\n`}
-                  {`Strength training schedule: ${calculation.strengthPlan}\n\n`}
-                  Note: This is an estimate, not medical advice.
-                </Text>
-              )}
+            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Age (years)</Text>
+            <TextInput style={[inputStyle, { maxWidth: 120, alignSelf: 'flex-start', width: '100%' }]} placeholder="e.g. 28" placeholderTextColor="#aaa" value={age} onChangeText={setAge} keyboardType="numeric" />
+            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Weight (kg)</Text>
+            <TextInput style={[inputStyle, { maxWidth: 120, alignSelf: 'flex-start', width: '100%' }]} placeholder="e.g. 72.5" placeholderTextColor="#aaa" value={weight} onChangeText={setWeight} keyboardType="numeric" />
+            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Height (cm)</Text>
+            <TextInput style={[inputStyle, { maxWidth: 120, alignSelf: 'flex-start', width: '100%' }]} placeholder="e.g. 175" placeholderTextColor="#aaa" value={height} onChangeText={setHeight} keyboardType="numeric" />
+            <Text style={{ fontWeight: 'bold', marginTop: 12, marginBottom: 4 }}>Goal</Text>
+            <View style={{ gap: 8, marginBottom: 16 }}>
+              <TouchableOpacity style={[goal === 'maintain' && goalBtnActive, goalBtn]} onPress={() => setGoal('maintain')}><Text style={[goal === 'maintain' && goalTextActive, goalText]}>Maintain weight</Text></TouchableOpacity>
+              <TouchableOpacity style={[goal === 'lose' && goalBtnActive, goalBtn]} onPress={() => setGoal('lose')}><Text style={[goal === 'lose' && goalTextActive, goalText]}>Lose fat (-15%)</Text></TouchableOpacity>
+              <TouchableOpacity style={[goal === 'gain' && goalBtnActive, goalBtn]} onPress={() => setGoal('gain')}><Text style={[goal === 'gain' && goalTextActive, goalText]}>Build muscle (+10%)</Text></TouchableOpacity>
+            </View>
+            <TouchableOpacity style={[calcBtnStyle, { maxWidth: 340, alignSelf: 'center', width: '100%' }]} onPress={calculate}><Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Calculate</Text></TouchableOpacity>
+          </View>
+          {/* Columna derecha: selector de actividad */}
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Activity level</Text>
+            <View style={{ gap: 8, marginBottom: 8 }}>
+              <TouchableOpacity style={[activity === 1 && activityBtnActive, activityBtn]} onPress={() => setActivity(1)}><Text style={[activity === 1 && activityTextActive, activityText]}>Sedentary (little or no exercise)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activity === 2 && activityBtnActive, activityBtn]} onPress={() => setActivity(2)}><Text style={[activity === 2 && activityTextActive, activityText]}>Light (1-3 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activity === 3 && activityBtnActive, activityBtn]} onPress={() => setActivity(3)}><Text style={[activity === 3 && activityTextActive, activityText]}>Moderate (3-5 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activity === 4 && activityBtnActive, activityBtn]} onPress={() => setActivity(4)}><Text style={[activity === 4 && activityTextActive, activityText]}>High (6-7 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activity === 5 && activityBtnActive, activityBtn]} onPress={() => setActivity(5)}><Text style={[activity === 5 && activityTextActive, activityText]}>Very high (physical job + training)</Text></TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </View>
+        <View style={{ minHeight: 60, maxWidth: 400, alignSelf: 'center', width: '100%' }}>
+          {result ? (
+            <Text style={{ color: '#222', fontSize: 18 }}>Your result: <Text style={{ fontWeight: 'bold' }}>{Math.round(result.target)} kcal/day</Text></Text>
+          ) : (
+            <Text style={{ color: '#888' }}>Complete the form to see your result.</Text>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: '#f3ede7',
-  },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  card: {
-    backgroundColor: '#fffaf4',
-    borderRadius: 22,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: '#e7d7c8',
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#2f241f',
-  },
-  subtitle: {
-    marginTop: 8,
-    marginBottom: 14,
-    color: '#5a4b41',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  label: {
-    marginTop: 10,
-    marginBottom: 6,
-    fontWeight: '700',
-    color: '#2f241f',
-  },
-  rowTwo: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  toggle: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#e7d7c8',
-    borderRadius: 12,
-    paddingVertical: 10,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  toggleActive: {
-    backgroundColor: '#d66f2f',
-    borderColor: '#d66f2f',
-  },
-  toggleText: {
-    color: '#2f241f',
-    fontWeight: '700',
-  },
-  toggleTextActive: {
-    color: '#fff',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#e7d7c8',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    color: '#2f241f',
-    backgroundColor: '#fff',
-  },
-  choiceWrap: {
-    gap: 8,
-  },
-  choiceChip: {
-    borderWidth: 1,
-    borderColor: '#e7d7c8',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  choiceChipActive: {
-    borderColor: '#d66f2f',
-    backgroundColor: '#fde7da',
-  },
-  choiceText: {
-    color: '#3a2d26',
-    fontSize: 13,
-  },
-  choiceTextActive: {
-    color: '#8c3e16',
-    fontWeight: '700',
-  },
-  button: {
-    marginTop: 14,
-    backgroundColor: '#d66f2f',
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 16,
-  },
-  resultBox: {
-    marginTop: 14,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#dcb79f',
-    borderRadius: 14,
-    backgroundColor: '#fff',
-    padding: 12,
-    minHeight: 88,
-  },
-  resultText: {
-    color: '#2f241f',
-    lineHeight: 22,
-  },
-  errorText: {
-    color: '#af2b1e',
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-});
+
+
+const inputStyle = {
+  backgroundColor: '#fff',
+  borderRadius: 8,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  fontSize: 16,
+  color: '#222',
+  marginBottom: 12,
+  borderWidth: 1.5,
+  borderColor: '#f3e9da',
+  fontWeight: 'bold',
+  letterSpacing: 0.2,
+};
+const activityBtn = {
+  backgroundColor: '#fff',
+  borderRadius: 8,
+  padding: 12,
+  borderWidth: 1,
+  borderColor: '#f3e9da',
+};
+const activityBtnActive = {
+  backgroundColor: '#fbe9d6',
+  borderColor: '#db7c36',
+};
+const activityText = {
+  color: '#db7c36',
+  fontWeight: 'bold',
+};
+const activityTextActive = {
+  color: '#db7c36',
+  fontWeight: 'bold',
+};
+const goalBtn = {
+  backgroundColor: '#fff',
+  borderRadius: 8,
+  padding: 12,
+  borderWidth: 1,
+  borderColor: '#f3e9da',
+};
+const goalBtnActive = {
+  backgroundColor: '#fbe9d6',
+  borderColor: '#db7c36',
+};
+const goalText = {
+  color: '#db7c36',
+  fontWeight: 'bold',
+};
+const goalTextActive = {
+  color: '#db7c36',
+  fontWeight: 'bold',
+};
+const calcBtnStyle = {
+  backgroundColor: '#db7c36',
+  borderRadius: 8,
+  padding: 16,
+  alignItems: 'center',
+  marginTop: 8,
+  marginBottom: 0,
+};

@@ -22,7 +22,8 @@ export default function App() {
     let bmr = gender === 'male'
       ? 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5
       : 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-    const activityFactors = [1.2, 1.375, 1.55, 1.725];
+    // 5 niveles de actividad
+    const activityFactors = [1.2, 1.375, 1.55, 1.725, 1.9];
     const maintenance = bmr * activityFactors[activity - 1];
     let target = maintenance;
     let goalLabel = 'Maintenance';
@@ -81,9 +82,9 @@ export default function App() {
             <TextInput style={[inputStyle, { maxWidth: 120, alignSelf: 'flex-start', width: '100%' }]} placeholder="e.g. 175" placeholderTextColor="#aaa" value={height} onChangeText={setHeight} keyboardType="numeric" />
             <Text style={{ fontWeight: 'bold', marginTop: 12, marginBottom: 4 }}>Goal</Text>
             <View style={{ gap: 8, marginBottom: 16 }}>
-              <TouchableOpacity style={[goal === 'maintain' && goalBtnActive, goalBtn]} onPress={() => setGoal('maintain')}><Text style={[goal === 'maintain' && goalTextActive, goalText]}>Maintain weight</Text></TouchableOpacity>
-              <TouchableOpacity style={[goal === 'lose' && goalBtnActive, goalBtn]} onPress={() => setGoal('lose')}><Text style={[goal === 'lose' && goalTextActive, goalText]}>Lose fat (-15%)</Text></TouchableOpacity>
-              <TouchableOpacity style={[goal === 'gain' && goalBtnActive, goalBtn]} onPress={() => setGoal('gain')}><Text style={[goal === 'gain' && goalTextActive, goalText]}>Build muscle (+10%)</Text></TouchableOpacity>
+              <TouchableOpacity style={[goalBtn, goal === 'maintain' && goalBtnActive]} onPress={() => setGoal('maintain')}><Text style={[goalText, goal === 'maintain' && goalTextActive]}>Maintain weight</Text></TouchableOpacity>
+              <TouchableOpacity style={[goalBtn, goal === 'lose' && goalBtnActive]} onPress={() => setGoal('lose')}><Text style={[goalText, goal === 'lose' && goalTextActive]}>Lose fat (-15%)</Text></TouchableOpacity>
+              <TouchableOpacity style={[goalBtn, goal === 'gain' && goalBtnActive]} onPress={() => setGoal('gain')}><Text style={[goalText, goal === 'gain' && goalTextActive]}>Build muscle (+10%)</Text></TouchableOpacity>
             </View>
             <TouchableOpacity style={[calcBtnStyle, { maxWidth: 340, alignSelf: 'center', width: '100%' }]} onPress={calculate}><Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Calculate</Text></TouchableOpacity>
           </View>
@@ -91,17 +92,58 @@ export default function App() {
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Activity level</Text>
             <View style={{ gap: 8, marginBottom: 8 }}>
-              <TouchableOpacity style={[activity === 1 && activityBtnActive, activityBtn]} onPress={() => setActivity(1)}><Text style={[activity === 1 && activityTextActive, activityText]}>Sedentary (little or no exercise)</Text></TouchableOpacity>
-              <TouchableOpacity style={[activity === 2 && activityBtnActive, activityBtn]} onPress={() => setActivity(2)}><Text style={[activity === 2 && activityTextActive, activityText]}>Light (1-3 days/week)</Text></TouchableOpacity>
-              <TouchableOpacity style={[activity === 3 && activityBtnActive, activityBtn]} onPress={() => setActivity(3)}><Text style={[activity === 3 && activityTextActive, activityText]}>Moderate (3-5 days/week)</Text></TouchableOpacity>
-              <TouchableOpacity style={[activity === 4 && activityBtnActive, activityBtn]} onPress={() => setActivity(4)}><Text style={[activity === 4 && activityTextActive, activityText]}>High (6-7 days/week)</Text></TouchableOpacity>
-              <TouchableOpacity style={[activity === 5 && activityBtnActive, activityBtn]} onPress={() => setActivity(5)}><Text style={[activity === 5 && activityTextActive, activityText]}>Very high (physical job + training)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activityBtn, activity === 1 && activityBtnActive]} onPress={() => setActivity(1)}><Text style={[activityText, activity === 1 && activityTextActive]}>Sedentary (little or no exercise)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activityBtn, activity === 2 && activityBtnActive]} onPress={() => setActivity(2)}><Text style={[activityText, activity === 2 && activityTextActive]}>Light (1-3 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activityBtn, activity === 3 && activityBtnActive]} onPress={() => setActivity(3)}><Text style={[activityText, activity === 3 && activityTextActive]}>Moderate (3-5 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activityBtn, activity === 4 && activityBtnActive]} onPress={() => setActivity(4)}><Text style={[activityText, activity === 4 && activityTextActive]}>High (6-7 days/week)</Text></TouchableOpacity>
+              <TouchableOpacity style={[activityBtn, activity === 5 && activityBtnActive]} onPress={() => setActivity(5)}><Text style={[activityText, activity === 5 && activityTextActive]}>Very high (physical job + training)</Text></TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={{ minHeight: 60, maxWidth: 400, alignSelf: 'center', width: '100%' }}>
           {result ? (
-            <Text style={{ color: '#222', fontSize: 18 }}>Your result: <Text style={{ fontWeight: 'bold' }}>{Math.round(result.target)} kcal/day</Text></Text>
+            <View>
+              <Text style={{ color: '#222', fontSize: 18, marginBottom: 8 }}>Your result: <Text style={{ fontWeight: 'bold' }}>{Math.round(result.target)} kcal/day</Text></Text>
+              {/* Cálculo de macros: 50% carbs, 30% proteína, 20% grasa */}
+              {(() => {
+                const kcal = result.target;
+                const carbs = Math.round((kcal * 0.5) / 4); // 4 kcal/g
+                const protein = Math.round((kcal * 0.3) / 4); // 4 kcal/g
+                const fat = Math.round((kcal * 0.2) / 9); // 9 kcal/g
+                // Distribución por comida
+                const meals = [
+                  { name: 'Desayuno', percent: 0.25 },
+                  { name: 'Almuerzo', percent: 0.30 },
+                  { name: 'Once', percent: 0.15 },
+                  { name: 'Cena', percent: 0.30 },
+                ];
+                return (
+                  <View>
+                    <View style={{ marginTop: 8, backgroundColor: '#fff', borderRadius: 8, padding: 16, borderWidth: 1, borderColor: '#f3e9da', marginBottom: 12 }}>
+                      <Text style={{ color: '#db7c36', fontWeight: 'bold', marginBottom: 4 }}>Recommended daily macros:</Text>
+                      <Text style={{ color: '#222', marginBottom: 2 }}>Carbohydrates: <Text style={{ fontWeight: 'bold' }}>{carbs} g</Text></Text>
+                      <Text style={{ color: '#222', marginBottom: 2 }}>Protein: <Text style={{ fontWeight: 'bold' }}>{protein} g</Text></Text>
+                      <Text style={{ color: '#222' }}>Fat: <Text style={{ fontWeight: 'bold' }}>{fat} g</Text></Text>
+                    </View>
+                    <View style={{ backgroundColor: '#fff', borderRadius: 8, padding: 16, borderWidth: 1, borderColor: '#f3e9da' }}>
+                      <Text style={{ color: '#db7c36', fontWeight: 'bold', marginBottom: 8 }}>Distribución por comida:</Text>
+                      {meals.map((meal, idx) => {
+                        const mealKcal = Math.round(kcal * meal.percent);
+                        const mealCarbs = Math.round(carbs * meal.percent);
+                        const mealProtein = Math.round(protein * meal.percent);
+                        const mealFat = Math.round(fat * meal.percent);
+                        return (
+                          <View key={meal.name} style={{ marginBottom: idx < meals.length - 1 ? 8 : 0 }}>
+                            <Text style={{ color: '#222', fontWeight: 'bold' }}>{meal.name}</Text>
+                            <Text style={{ color: '#555', marginLeft: 8 }}>Calorías: {mealKcal} kcal | Carbs: {mealCarbs} g | Proteína: {mealProtein} g | Grasa: {mealFat} g</Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                );
+              })()}
+            </View>
           ) : (
             <Text style={{ color: '#888' }}>Complete the form to see your result.</Text>
           )}

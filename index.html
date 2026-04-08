@@ -1,40 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <title>Calorie Calculator</title>
   </head>
   <body>
-    <section>
-      <h1>Calculator</h1>
-      <div class="container">
-        <div id="display"></div>
-        <div class="buttons">
-          <div class="button">C</div>
-          <div class="button">/</div>
-          <div class="button">*</div>
-          <div class="button">&larr;</div>
-          <div class="button">7</div>
-          <div class="button">8</div>
-          <div class="button">9</div>
-          <div class="button">-</div>
-          <div class="button">4</div>
-          <div class="button">5</div>
-          <div class="button">6</div>
-          <div class="button">+</div>
-          <div class="button">1</div>
-          <div class="button">2</div>
-          <div class="button">3</div>
-          <div class="button">.</div>
-          <div class="button">(</div>
-          <div class="button">0</div>
-          <div class="button">)</div>
-          <div id="equal" class="button">=</div>
-        </div>
-      </div>
-      <script src="index.js"></script>
-    </section>
+    <main class="app">
+      <section class="card">
+        <h1>Calorie Calculator</h1>
+        <p class="subtitle">
+          Calculate your estimated daily calories for maintenance, cutting, or bulking.
+        </p>
+
+        <form id="calorie-form" class="form">
+          <label for="sex">Sex</label>
+          <select id="sex" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+
+          <label for="age">Age (years)</label>
+          <input id="age" type="number" min="10" max="100" required />
+
+          <label for="weight">Weight (kg)</label>
+          <input id="weight" type="number" min="20" max="300" step="0.1" required />
+
+          <label for="height">Height (cm)</label>
+          <input id="height" type="number" min="100" max="250" required />
+
+          <label for="activity">Activity level</label>
+          <select id="activity" required>
+            <option value="1.2">Sedentary (little or no exercise)</option>
+            <option value="1.375">Light (1-3 days/week)</option>
+            <option value="1.55">Moderate (3-5 days/week)</option>
+            <option value="1.725">High (6-7 days/week)</option>
+            <option value="1.9">Very high (physical job + training)</option>
+          </select>
+
+          <label for="goal">Goal</label>
+          <select id="goal" required>
+            <option value="maintain">Maintain weight</option>
+            <option value="cut">Lose fat (-15%)</option>
+            <option value="bulk">Build muscle (+10%)</option>
+          </select>
+
+          <button type="submit">Calculate</button>
+        </form>
+
+        <section id="result" class="result" aria-live="polite">
+          Complete the form to see your result.
+        </section>
+      </section>
+    </main>
+
+    <script src="index.js"></script>
   </body>
 </html>

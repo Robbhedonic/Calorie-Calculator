@@ -60,11 +60,11 @@ export default function App() {
   ] : [];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f6f1' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBar barStyle="dark-content" />
-      <ScrollView contentContainerStyle={{ padding: 24 }}>
-        <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#222', marginBottom: 8 }}>Calorie Calculator</Text>
-        <Text style={{ color: '#555', marginBottom: 24 }}>Calculate your daily calories for maintenance, cutting, or bulking.</Text>
+      <ScrollView contentContainerStyle={{ padding: 24, minHeight: '100vh', justifyContent: 'flex-start' }}>
+        <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#222', marginBottom: 8, textAlign: 'center' }}>Calorie Calculator</Text>
+        <Text style={{ color: '#555', marginBottom: 24, textAlign: 'center' }}>Calculate your daily calories for maintenance, cutting, or bulking.</Text>
         {/* Dos columnas: inputs a la izquierda, actividad a la derecha */}
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 24, maxWidth: 900, alignSelf: 'center', width: '100%' }}>
           {/* Columna izquierda: datos principales */}
@@ -148,6 +148,8 @@ export default function App() {
             <Text style={{ color: '#888' }}>Complete the form to see your result.</Text>
           )}
         </View>
+        {/* Barra naranja decorativa debajo del formulario */}
+        <View style={{ height: 80, backgroundColor: '#fb923c', width: '100%', borderRadius: 0, marginTop: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -164,7 +166,7 @@ const inputStyle = {
   color: '#222',
   marginBottom: 12,
   borderWidth: 1.5,
-  borderColor: '#f3e9da',
+  borderColor: '#e5e7eb',
   fontWeight: 'bold',
   letterSpacing: 0.2,
 };

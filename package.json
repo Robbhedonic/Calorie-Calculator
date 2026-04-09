@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
+  "types": "./index.d.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -12,10 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build:css": "tailwindcss -i ./style.css -o ./output.css --minify",
-    "predeploy": "expo export --platform web",
-    "deploy": "gh-pages -d dist"
+    "build": "expo export --platform web --output-dir dist"
   },
-  "homepage": "https://robbhedonic.github.io/Calorie-Calculator",
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
     "expo": "~51.0.28",
@@ -28,12 +27,15 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-native": "^0.72.8",
     "autoprefixer": "^10.4.27",
     "eslint": "^8.57.1",
     "eslint-config-universe": "^13.0.0",
-    "gh-pages": "^6.3.0",
     "postcss": "^8.5.9",
     "prettier": "^3.3.3",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
   }
 }

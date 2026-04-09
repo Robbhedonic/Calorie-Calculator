@@ -15,7 +15,9 @@
   border: 3px solid #fdba74;
   margin: 0 8px;
   box-sizing: border-box;
-  transition: background 0.2s, border 0.2s;
+  transition:
+    background 0.2s,
+    border 0.2s;
 }
 .activity-dot-active {
   background: #111;
@@ -45,14 +47,19 @@
 }
 
 /* Focus/hover states for buttons */
-.form-btn:focus, .form-btn:hover {
-  box-shadow: 0 0 0 2px #fff, 0 2px 8px rgba(0,0,0,0.12);
+.form-btn:focus,
+.form-btn:hover {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 2px 8px rgba(0, 0, 0, 0.12);
   outline: none;
 }
-.form-btn-calc:focus, .form-btn-calc:hover {
+.form-btn-calc:focus,
+.form-btn-calc:hover {
   background: #222;
 }
-.form-btn-clear:focus, .form-btn-clear:hover {
+.form-btn-clear:focus,
+.form-btn-clear:hover {
   color: #fff;
   background: #fdba74;
 }
@@ -60,17 +67,23 @@
 /* Focus for inputs */
 .form-input:focus {
   border-color: #fff;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Animación sutil para botones activos */
 .form-btn-active {
-  animation: btnPop 0.18s cubic-bezier(.4,2,.6,1) 1;
+  animation: btnPop 0.18s cubic-bezier(0.4, 2, 0.6, 1) 1;
 }
 @keyframes btnPop {
-  0% { transform: scale(0.96); }
-  80% { transform: scale(1.04); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.96);
+  }
+  80% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 /* --- Custom styles for exact match with reference --- */
 .form-btn {
@@ -83,7 +96,10 @@
   color: #000;
   border: none;
   margin: 0 0.25rem;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
   box-shadow: none;
   outline: none;
   cursor: pointer;
@@ -91,7 +107,7 @@
 .form-btn-active {
   background: #111;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 .form-btn-calc {
   background: #111;
@@ -232,7 +248,9 @@ body {
 }
 
 .shadow-xl {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .p-8 {
@@ -336,7 +354,7 @@ body {
 }
 
 .placeholder\:text-black\/60::placeholder {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .mt-4 {
@@ -351,6 +369,6 @@ body {
   margin-top: 1.5rem;
 }
 
-input[type="range"].accent-black {
+input[type='range'].accent-black {
   accent-color: #000;
 }

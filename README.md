@@ -37,17 +37,26 @@ Then open with:
 - `npm run format` - format with Prettier
 - `npm run format:check` - check Prettier formatting
 
-## Lint & Format
+## Build para producción (Vercel)
 
-This project uses:
+1. Ejecuta:
 
-- ESLint with `eslint-config-universe`
-- Prettier
+   ```bash
+   npm run build
+   ```
 
-Configuration files:
+   Esto generará la carpeta `dist/` lista para producción.
 
-- `.eslintrc.cjs`
-- `.eslintignore`
-- `.prettierrc`
-- `.prettierignore`
-- `.gitignore`
+2. En Vercel:
+   - Elige como directorio de salida: `dist`
+   - Comando de build: `npm run build`
+   - Framework: Otros (Other)
+
+3. Vercel detectará automáticamente el proyecto y desplegará el contenido de `dist/`.
+
+---
+
+## Notas
+
+- No necesitas el campo `homepage` ni scripts de GitHub Pages.
+- Puedes eliminar la dependencia `gh-pages`.

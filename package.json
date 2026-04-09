@@ -11,8 +11,11 @@
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "build:css": "tailwindcss -i ./style.css -o ./output.css --minify"
+    "build:css": "tailwindcss -i ./style.css -o ./output.css --minify",
+    "predeploy": "expo export --platform web",
+    "deploy": "gh-pages -d dist"
   },
+  "homepage": "https://Robbhedonic.github.io/Calculator-JS",
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
     "expo": "~51.0.28",
@@ -28,6 +31,7 @@
     "autoprefixer": "^10.4.27",
     "eslint": "^8.57.1",
     "eslint-config-universe": "^13.0.0",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.9",
     "prettier": "^3.3.3",
     "tailwindcss": "^4.2.2"

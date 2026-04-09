@@ -27,7 +27,7 @@ export default function App() {
       gender === 'male'
         ? 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5
         : 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-    // 5 niveles de actividad
+    // 5 activity levels
     const activityFactors = [1.2, 1.375, 1.55, 1.725, 1.9];
     const maintenance = bmr * activityFactors[activity - 1];
     let target = maintenance;
@@ -45,11 +45,11 @@ export default function App() {
     setResult({ bmr, maintenance, target, goalLabel });
   }
 
-  // Responsive layout eliminado (no Dimensions)
+  // Responsive layout removed (no Dimensions)
 
-  // Datos para gráfico de macros (ejemplo)
+  // Data for macros chart (example)
 
-  // Datos para gráfico circular de calorías
+  // Data for calories pie chart
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -240,7 +240,7 @@ export default function App() {
                 const carbs = Math.round((kcal * 0.5) / 4); // 4 kcal/g
                 const protein = Math.round((kcal * 0.3) / 4); // 4 kcal/g
                 const fat = Math.round((kcal * 0.2) / 9); // 9 kcal/g
-                // Distribución por comida
+                // Distribution per meal
                 const meals = [
                   { name: 'Desayuno', percent: 0.25 },
                   { name: 'Almuerzo', percent: 0.3 },

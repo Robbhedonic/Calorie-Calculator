@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 
 export default function App() {
-  // Variables y funciones para la lógica de la app (puedes descomentar y usar cuando agregues el resto de la UI)
+  // Variables and functions for app logic (you can uncomment and use when adding the rest of the UI)
   // const [gender, setGender] = useState<'male' | 'female'>('male');
   // const [age, setAge] = useState<string>('');
   // const [weight, setWeight] = useState<string>('');

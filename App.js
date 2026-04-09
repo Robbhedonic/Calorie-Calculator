@@ -1,49 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
-
-export default function App() {
-  const [gender, setGender] = useState('male');
-  const [age, setAge] = useState('');
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [activity, setActivity] = useState(3);
-  const [goal, setGoal] = useState('maintain');
-  const [result, setResult] = useState(null);
-
-  function calculate() {
-    if (!age || !weight || !height) return;
-    const ageNum = Number(age);
-    const weightNum = Number(weight);
-    const heightNum = Number(height);
-    const bmr =
-      gender === 'male'
-        ? 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5
-        : 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-    // 5 activity levels
-    const activityFactors = [1.2, 1.375, 1.55, 1.725, 1.9];
-    const maintenance = bmr * activityFactors[activity - 1];
-    let target = maintenance;
-    let goalLabel = 'Maintenance';
-    if (goal === 'lose') {
-      target = maintenance * 0.85;
-      goalLabel = 'Lose (-15%)';
-    } else if (goal === 'lose10') {
-      target = maintenance * 0.9;
-      goalLabel = 'Lose 10%';
-    } else if (goal === 'gain') {
-      target = maintenance * 1.1;
-      goalLabel = 'Gain (+10%)';
-    }
-    setResult({ bmr, maintenance, target, goalLabel });
-  }
+// ...existing code...
 
   // Responsive layout removed (no Dimensions)
 
@@ -324,7 +280,7 @@ export default function App() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+
 
 const inputStyle = {
   backgroundColor: '#fff',

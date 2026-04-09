@@ -242,10 +242,10 @@ export default function App() {
                 const fat = Math.round((kcal * 0.2) / 9); // 9 kcal/g
                 // Distribution per meal
                 const meals = [
-                  { name: 'Desayuno', percent: 0.25 },
-                  { name: 'Almuerzo', percent: 0.3 },
-                  { name: 'Once', percent: 0.15 },
-                  { name: 'Cena', percent: 0.3 },
+                  { name: 'Breakfast', percent: 0.25 },
+                  { name: 'Lunch', percent: 0.3 },
+                  { name: 'Snack', percent: 0.15 },
+                  { name: 'Dinner', percent: 0.3 },
                 ];
                 return (
                   <View>
@@ -283,7 +283,7 @@ export default function App() {
                       }}
                     >
                       <Text style={{ color: '#db7c36', fontWeight: 'bold', marginBottom: 8 }}>
-                        Distribución por comida:
+                        Distribution per meal:
                       </Text>
                       {meals.map((meal, idx) => {
                         const mealKcal = Math.round(kcal * meal.percent);
@@ -297,8 +297,7 @@ export default function App() {
                           >
                             <Text style={{ color: '#222', fontWeight: 'bold' }}>{meal.name}</Text>
                             <Text style={{ color: '#555', marginLeft: 8 }}>
-                              Calorías: {mealKcal} kcal | Carbs: {mealCarbs} g | Proteína:{' '}
-                              {mealProtein} g | Grasa: {mealFat} g
+                              Calories: {mealKcal} kcal | Carbs: {mealCarbs} g | Protein: {mealProtein} g | Fat: {mealFat} g
                             </Text>
                           </View>
                         );
@@ -312,7 +311,7 @@ export default function App() {
             <Text style={{ color: '#888' }}>Complete the form to see your result.</Text>
           )}
         </View>
-        {/* Barra naranja decorativa debajo del formulario */}
+        {/* Orange decorative bar below the form */}
         <View
           style={{
             height: 80,

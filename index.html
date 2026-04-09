@@ -8,74 +8,7 @@
     <title>Calorie Calculator</title>
   </head>
   <body>
-      <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- Branding/Intro (left) -->
-        <div class="flex-1 flex flex-col justify-center items-center bg-white p-8">
-          <div class="flex flex-col items-center">
-            <div class="mb-6">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#ff9800" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#ff9800" stroke-width="2" stroke-linecap="round"/></svg>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2 text-center">CALORIES CALCULATOR</h1>
-            <p class="text-gray-700 text-lg text-center max-w-xs mb-8">Calculate optimal macronutrient ratios for your body. Enter your age, height, weight, gender, and activity level.</p>
-          </div>
-        </div>
-        <!-- Formulario (right) -->
-        <div class="flex-1 flex flex-col justify-center items-center bg-orange-500 p-8">
-          <div class="w-full max-w-md bg-orange-400 rounded-2xl shadow-xl p-8">
-            <h2 class="text-2xl font-bold text-white mb-6">Body Parameters</h2>
-            <form id="calorieForm" class="space-y-6">
-              <div class="flex gap-4 mb-4">
-                <button type="button" class="form-btn form-btn-active">MALE</button>
-                <button type="button" class="form-btn">FEMALE</button>
-              </div>
-              <div class="flex gap-4 mb-4">
-                <input type="number" placeholder="24" class="form-input" />
-                <input type="number" placeholder="72 KG" class="form-input" />
-                <input type="number" placeholder="182 CM" class="form-input" />
-              </div>
-              <div class="mb-6">
-                <h3 class="text-lg font-bold text-white mb-2">Activity Level</h3>
-                <div class="activity-desc text-white mb-2"><b>Low:</b> Sedentary type of activity. It's everyday activity that includes walking, driving a car, working, eating etc.</div>
-                <div class="activity-slider">
-                  <div class="activity-label">LOW</div>
-                  <div class="activity-dot activity-dot-active"></div>
-                  <div class="activity-line"></div>
-                  <div class="activity-dot"></div>
-                  <div class="activity-line"></div>
-                  <div class="activity-dot"></div>
-                  <div class="activity-line"></div>
-                  <div class="activity-dot"></div>
-                  <div class="activity-label">VERY HIGH</div>
-                </div>
-                <div class="activity-labels">
-                  <div>LOW</div>
-                  <div>MIDDLE</div>
-                  <div>HIGH</div>
-                  <div>VERY HIGH</div>
-                </div>
-              </div>
-              <div class="mb-6">
-                <h3 class="text-lg font-bold text-white mb-2">Goals</h3>
-                <div class="flex gap-3">
-                  <button type="button" class="form-btn form-btn-active">LOSE</button>
-                  <button type="button" class="form-btn">LOSE 10%</button>
-                  <button type="button" class="form-btn">MAINTAIN</button>
-                  <button type="button" class="form-btn">GAIN</button>
-                </div>
-              </div>
-              <div class="flex gap-4 mt-4">
-                <button type="reset" class="form-btn form-btn-clear">CLEAR</button>
-                <button type="submit" class="form-btn form-btn-calc">CALCULATE</button>
-              </div>
-            </form>
-            <div id="result" class="mt-8 text-center text-white text-xl font-bold"></div>
-          </div>
-        </div>
-      </div>
-      <script src="index.js"></script>
-    </body>
-    </main>
-
+    <div id="root"></div>
     <script src="index.js"></script>
   </body>
 </html>

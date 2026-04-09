@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "allowJs": true,
@@ -13,7 +16,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "App.js", "index.js"],
-  "exclude": ["node_modules", "dist"],
-
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "App.js",
+    "index.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "extends": "expo/tsconfig.base"
 }

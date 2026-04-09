@@ -1,4 +1,6 @@
 
+import { SafeAreaView, StatusBar, ScrollView, View, Text, TextInput, TouchableOpacity } from 'react-native';
+
 function App() {
   // Responsive layout removed (no Dimensions)
 

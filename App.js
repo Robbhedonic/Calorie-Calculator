@@ -4,9 +4,9 @@ import { SafeAreaView, StatusBar, ScrollView, View, Text, TextInput, TouchableOp
 
 function App() {
   const [gender, setGender] = useState('male');
-  const [age, setAge] = useState('28');
-  const [weight, setWeight] = useState('72');
-  const [height, setHeight] = useState('175');
+  const [age, setAge] = useState('');
+  const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState('');
   const [activity, setActivity] = useState(3);
   const [goal, setGoal] = useState('maintain');
   const [result, setResult] = useState(null);
@@ -65,13 +65,13 @@ function App() {
         </View>
 
         <Text style={label}>Age (years)</Text>
-        <TextInput style={inputStyle} value={age} onChangeText={setAge} keyboardType="numeric" placeholder="28" />
+        <TextInput style={inputStyle} value={age} onChangeText={setAge} keyboardType="numeric" />
 
         <Text style={label}>Weight (kg)</Text>
-        <TextInput style={inputStyle} value={weight} onChangeText={setWeight} keyboardType="numeric" placeholder="72" />
+        <TextInput style={inputStyle} value={weight} onChangeText={setWeight} keyboardType="numeric" />
 
         <Text style={label}>Height (cm)</Text>
-        <TextInput style={inputStyle} value={height} onChangeText={setHeight} keyboardType="numeric" placeholder="175" />
+        <TextInput style={inputStyle} value={height} onChangeText={setHeight} keyboardType="numeric" />
 
         <Text style={label}>Activity level</Text>
         <View style={{ gap: 8, marginBottom: 16 }}>
@@ -108,10 +108,57 @@ function App() {
         <View style={{ marginTop: 20 }}>
           {result ? (
             <View>
-              <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{result.target} kcal/day</Text>
-              <Text style={{ marginTop: 8, color: '#444' }}>Carbs: {result.macros.carbs} g</Text>
-              <Text style={{ color: '#444' }}>Protein: {result.macros.protein} g</Text>
-              <Text style={{ color: '#444' }}>Fat: {result.macros.fat} g</Text>
+              {/* Daily totals */}
+              <View style={{ backgroundColor: '#db7c36', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff', marginBottom: 8 }}>Daily Total</Text>
+                <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#fff', marginBottom: 12 }}>{result.target} kcal</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8 }}>
+                    <Text style={{ fontSize: 12, color: '#fff', opacity: 0.9 }}>Carbs</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{result.macros.carbs}g</Text>
+                  </View>
+                  <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8 }}>
+                    <Text style={{ fontSize: 12, color: '#fff', opacity: 0.9 }}>Protein</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{result.macros.protein}g</Text>
+                  </View>
+                  <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8 }}>
+                    <Text style={{ fontSize: 12, color: '#fff', opacity: 0.9 }}>Fat</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{result.macros.fat}g</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Meal distribution */}
+              <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#222', marginBottom: 12 }}>Distribution per meal</Text>
+              {(() => {
+                const meals = [
+                  { name: 'Breakfast', percent: 0.25 },
+                  { name: 'Lunch', percent: 0.35 },
+                  { name: 'Snack', percent: 0.15 },
+                  { name: 'Dinner', percent: 0.25 },
+                ];
+                return (
+                  <View>
+                    {meals.map((meal, idx) => {
+                      const kcal = Math.round(result.target * meal.percent);
+                      const carbs = Math.round(result.macros.carbs * meal.percent);
+                      const protein = Math.round(result.macros.protein * meal.percent);
+                      const fat = Math.round(result.macros.fat * meal.percent);
+                      return (
+                        <View key={idx} style={{ backgroundColor: '#f5f5f5', borderRadius: 8, padding: 12, marginBottom: 12, borderLeftWidth: 4, borderLeftColor: '#db7c36' }}>
+                          <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#222', marginBottom: 8 }}>{meal.name}</Text>
+                          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#db7c36', marginBottom: 8 }}>{kcal} kcal</Text>
+                          <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 12, color: '#444' }}>Carbs: {carbs}g</Text>
+                            <Text style={{ fontSize: 12, color: '#444' }}>Protein: {protein}g</Text>
+                            <Text style={{ fontSize: 12, color: '#444' }}>Fat: {fat}g</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                );
+              })()}
             </View>
           ) : (
             <Text style={{ color: '#888' }}>Complete the form and tap Calculate.</Text>
